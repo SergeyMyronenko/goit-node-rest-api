@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 const contactsPath = path.resolve("db", "contacts.json");
 
 export async function listContacts() {
-  const data = await fs.readFile(contactsPath);
+  const data = await fs.readFile(contactsPath, { encoding: "utf-8" });
 
   return JSON.parse(data);
 }
@@ -44,4 +44,18 @@ export async function addContact(name, email, phone) {
   allContacts.push(newContact);
   await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
   return newContact;
+}
+
+export async function rewriteContact(id, data) {
+  const dataContacts = await fs.readFile(contactsPath, { encoding: "utf-8" });
+  const allContacts = JSON.parse(dataContacts);
+  const findContact = allContacts.findIndex((item) => item.id === id);
+  if (findContact === -1) {
+    return null;
+  }
+
+  allContacts[findContact] = { id, ...data };
+  await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
+
+  return allContacts[findContact];
 }
