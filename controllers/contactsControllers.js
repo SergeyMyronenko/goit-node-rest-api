@@ -42,7 +42,7 @@ export async function createContact(req, res, next) {
       return res.status(400).json({ message: "Fields must be filled" });
     }
 
-    const newContact = await Contact.create(name, email, phone);
+    const newContact = await Contact.create({ name, email, phone });
     res.status(201).json(newContact);
   } catch (error) {
     next(error);

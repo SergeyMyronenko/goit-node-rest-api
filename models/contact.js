@@ -22,6 +22,6 @@ const contactSchema = new Schema(
   }
 );
 
-const Contact = model("Contact", contactSchema);
+const Contact = model("contact", contactSchema);
 
 export default Contact;
