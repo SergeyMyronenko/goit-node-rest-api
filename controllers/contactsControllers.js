@@ -39,7 +39,7 @@ export async function createContact(req, res, next) {
 
     const { error } = createContactSchema.validate({ name, email, phone });
     if (error) {
-      return res.status(400).json({ message: "Filds must be filled" });
+      return res.status(400).json({ message: "Fields must be filled" });
     }
 
     const newContact = await Contact.create(name, email, phone);
@@ -53,7 +53,7 @@ export async function updateContact(req, res, next) {
   try {
     const { id } = req.params;
     const { name, email, phone } = req.body;
-    const { error } = createContactSchema.validate({ name, email, phone });
+    const { error } = updateContactSchema.validate({ name, email, phone });
 
     if (Object.keys(req.body).length === 0) {
       return res
