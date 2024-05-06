@@ -14,10 +14,10 @@ export async function getOneContact(req, res, next) {
   try {
     const { id } = req.params;
     const oneContact = await Contact.findById(id);
-    if (oneContact) {
-      res.status(200).json(oneContact);
+    if (!oneContact) {
+      throw HttpError(404);
     }
-    throw new HttpError(404);
+    res.status(200).json(oneContact);
   } catch (error) {
     next(error);
   }
@@ -27,10 +27,11 @@ export async function deletedContact(req, res, next) {
   try {
     const { id } = req.params;
     const deletedContact = await Contact.findByIdAndDelete(id);
-    if (deletedContact) {
-      res.status(200).json(deletedContact);
+    if (!deletedContact) {
+      throw HttpError(404);
     }
-    throw new HttpError(404);
+
+    res.status(200).json(deletedContact);
   } catch (error) {
     next(error);
   }
@@ -39,9 +40,6 @@ export async function deletedContact(req, res, next) {
 export async function createContact(req, res, next) {
   try {
     const { name, email, phone } = req.body;
-    if (!name || !email || !phone) {
-      throw new HttpError(400, "Fields must be filled");
-    }
     const newContact = await Contact.create({ name, email, phone });
     res.status(201).json(newContact);
   } catch (error) {
@@ -52,15 +50,10 @@ export async function createContact(req, res, next) {
 export async function updateContact(req, res, next) {
   try {
     const { id } = req.params;
-    const { name, email, phone } = req.body;
-
-    if (Object.keys(req.body).length === 0) {
-      throw new HttpError(400, "Body must have at least one field");
-    }
 
     const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
     if (!result) {
-      return res.status(404).json({ message: "Not found" });
+      throw HttpError(404);
     }
 
     res.status(200).json(result);
@@ -72,15 +65,10 @@ export async function updateContact(req, res, next) {
 export async function updateStatusContact(req, res, next) {
   try {
     const { id } = req.params;
-    const { favorite } = req.body;
-
-    if (Object.keys(req.body).length === 0) {
-      throw new HttpError(400, "Body must have at least one field");
-    }
 
     const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
     if (!result) {
-      return res.status(404).json({ message: "Not found" });
+      throw HttpError(404);
     }
 
     res.status(200).json(result);
