@@ -1,54 +1,46 @@
-import {
-  addContact,
-  getContactById,
-  listContacts,
-  removeContact,
-  rewriteContact,
-} from "../services/contactsServices.js";
-import {
-  createContactSchema,
-  updateContactSchema,
-} from "../schemas/contactSchema.js";
+import HttpError from "../helpers/HttpError.js";
+import Contact from "../models/contact.js";
 
 export async function getAllContacts(req, res, next) {
   try {
-    const allContacts = await listContacts();
+    const allContacts = await Contact.find();
     res.status(200).json(allContacts);
   } catch (error) {
     next(error);
   }
 }
 
-export async function getOneContact(req, res) {
-  const { id } = req.params;
-  const oneContact = await getContactById(id);
-  if (oneContact) {
+export async function getOneContact(req, res, next) {
+  try {
+    const { id } = req.params;
+    const oneContact = await Contact.findById(id);
+    if (!oneContact) {
+      throw HttpError(404);
+    }
     res.status(200).json(oneContact);
-  } else {
-    res.status(404).json({ message: "Not found" });
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function deletedContact(req, res) {
-  const { id } = req.params;
-  const deletedContact = await removeContact(id);
-  if (deletedContact) {
+export async function deletedContact(req, res, next) {
+  try {
+    const { id } = req.params;
+    const deletedContact = await Contact.findByIdAndDelete(id);
+    if (!deletedContact) {
+      throw HttpError(404);
+    }
+
     res.status(200).json(deletedContact);
-  } else {
-    res.status(404).json({ message: "Not found" });
+  } catch (error) {
+    next(error);
   }
 }
 
 export async function createContact(req, res, next) {
-  const { name, email, phone } = req.body;
-
-  const { error } = createContactSchema.validate({ name, email, phone });
-  if (error) {
-    return res.status(400).json({ message: "Filds must be filled" });
-  }
-
   try {
-    const newContact = await addContact(name, email, phone);
+    const { name, email, phone } = req.body;
+    const newContact = await Contact.create({ name, email, phone });
     res.status(201).json(newContact);
   } catch (error) {
     next(error);
@@ -56,23 +48,27 @@ export async function createContact(req, res, next) {
 }
 
 export async function updateContact(req, res, next) {
-  const { id } = req.params;
-  const { name, email, phone } = req.body;
-  const { error } = updateContactSchema.validate({ name, email, phone });
-
-  if (Object.keys(req.body).length === 0) {
-    return res
-      .status(400)
-      .json({ message: "Body must have at least one field" });
-  }
-  if (error) {
-    return res.status(400).json({ message: error.message });
-  }
-
   try {
-    const result = await rewriteContact(id, req.body);
+    const { id } = req.params;
+
+    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
     if (!result) {
-      return res.status(404).json({ message: "Not found" });
+      throw HttpError(404);
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateStatusContact(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+    if (!result) {
+      throw HttpError(404);
     }
 
     res.status(200).json(result);
