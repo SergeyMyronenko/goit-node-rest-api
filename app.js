@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
 import contactRouter from "./routes/contactRouter.js";
+import userRouter from "./routes/authRouter.js";
 
 const DB_URI = process.env.DB_URI;
 
@@ -11,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/users", userRouter);
 app.use("/api/contacts", contactRouter);
 
 app.use((err, req, res, next) => {
