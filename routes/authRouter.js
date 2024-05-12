@@ -7,6 +7,7 @@ import {
 } from "../controllers/authControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import { loginUserSchema, registerUserSchema } from "../schemas/authSchema.js";
+import { authMiddleware } from "../helpers/authmiddleware.js";
 
 const userRouter = express.Router();
 
@@ -18,8 +19,8 @@ userRouter.post(
 
 userRouter.post("/login", validateBody(loginUserSchema), userLogin);
 
-userRouter.post("/logout", userLogout);
+userRouter.post("/logout", authMiddleware, userLogout);
 
-userRouter.get("/current", userByToken);
+userRouter.get("/current", authMiddleware, userByToken);
 
 export default userRouter;

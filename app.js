@@ -2,6 +2,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
+import { authMiddleware } from "./helpers/authmiddleware.js";
 import contactRouter from "./routes/contactRouter.js";
 import userRouter from "./routes/authRouter.js";
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/users", userRouter);
-app.use("/api/contacts", contactRouter);
+app.use("/api/contacts", authMiddleware, contactRouter);
 
 app.use((err, req, res, next) => {
   const { status = 500, message = "Internal server error" } = err;
