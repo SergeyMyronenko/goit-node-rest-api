@@ -13,18 +13,29 @@ import {
   updateContactSchema,
 } from "../schemas/contactSchema.js";
 import validateBody from "../helpers/validateBody.js";
+import { authMiddleware } from "../helpers/authmiddleware.js";
 
 const contactRouter = express.Router();
 
-contactRouter.get("/", getAllContacts);
+contactRouter.get("/", authMiddleware, getAllContacts);
 
-contactRouter.get("/:id", getOneContact);
+contactRouter.get("/:id", authMiddleware, getOneContact);
 
-contactRouter.delete("/:id", deletedContact);
+contactRouter.delete("/:id", authMiddleware, deletedContact);
 
-contactRouter.post("/", validateBody(createContactSchema), createContact);
+contactRouter.post(
+  "/",
+  validateBody(createContactSchema),
+  authMiddleware,
+  createContact
+);
 
-contactRouter.put("/:id", validateBody(createContactSchema), updateContact);
+contactRouter.put(
+  "/:id",
+  validateBody(createContactSchema),
+  authMiddleware,
+  updateContact
+);
 
 contactRouter.patch(
   "/:id/favorite",

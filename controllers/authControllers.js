@@ -12,9 +12,16 @@ export async function userRegistration(req, res, next) {
       throw HttpError(409, "Email in use");
     }
     const hashPassword = await bcrypt.hash(password, 10);
-    await User.create({ email, password: hashPassword });
+    const newUser = await User.create({ email, password: hashPassword });
 
-    res.status(201).send({ message: "Registration succesfully" });
+    const { subscription } = newUser;
+
+    res.status(201).json({
+      user: {
+        email,
+        subscription,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -45,7 +52,13 @@ export async function userLogin(req, res, next) {
 
     await User.findByIdAndUpdate(user._id, { token });
 
-    res.status(200).send(token);
+    res.status(200).json({
+      token,
+      user: {
+        email,
+        subscription: user.subscription,
+      },
+    });
   } catch (error) {
     next(error);
   }

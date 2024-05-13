@@ -18,7 +18,6 @@ export async function getAllContacts(req, res, next) {
 
     const allContacts = await query.skip(skip).limit(per_page).exec();
 
-    console.log(allContacts);
     res.status(200).json(allContacts);
   } catch (error) {
     next(error);
@@ -45,6 +44,7 @@ export async function getOneContact(req, res, next) {
 export async function deletedContact(req, res, next) {
   try {
     const { id } = req.params;
+
     const deletedContact = await Contact.findByIdAndDelete(id);
     if (!deletedContact) {
       throw HttpError(404);
@@ -61,7 +61,6 @@ export async function deletedContact(req, res, next) {
 }
 
 export async function createContact(req, res, next) {
-  console.log(req.user);
   try {
     const contact = {
       name: req.body.name,
