@@ -28,7 +28,7 @@ export async function getOneContact(req, res, next) {
   try {
     const { id } = req.params;
 
-    const oneContact = await Contact.findById({
+    const oneContact = await Contact.findOne({
       _id: id,
       owner: req.user.id,
     });
@@ -80,7 +80,7 @@ export async function updateContact(req, res, next) {
   try {
     const { id } = req.params;
 
-    const result = await Contact.findByIdAndUpdate(
+    const result = await Contact.findOneAndUpdate(
       {
         _id: id,
         owner: req.user.id,
@@ -102,7 +102,7 @@ export async function updateStatusContact(req, res, next) {
   try {
     const { id } = req.params;
 
-    const result = await Contact.findByIdAndUpdate(
+    const result = await Contact.findOneAndUpdate(
       {
         _id: id,
         owner: req.user.id,
