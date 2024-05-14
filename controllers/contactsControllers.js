@@ -28,11 +28,11 @@ export async function getOneContact(req, res, next) {
   try {
     const { id } = req.params;
 
-    if (oneContact.owner.toString() !== req.user.id) {
-      throw HttpError(404);
-    }
+    const oneContact = await Contact.findById({
+      _id: id,
+      owner: req.user.id,
+    });
 
-    const oneContact = await Contact.findById(id);
     if (!oneContact) {
       throw HttpError(404);
     }
@@ -47,15 +47,14 @@ export async function deletedContact(req, res, next) {
   try {
     const { id } = req.params;
 
-    if (deletedContact.owner.toString() !== req.user.id) {
-      throw HttpError(404);
-    }
+    const contact = await Contact.findOneAndDelete({
+      _id: id,
+      owner: req.user.id,
+    });
 
-    const deletedContact = await Contact.findByIdAndDelete(id);
-    if (!deletedContact) {
-      throw HttpError(404);
+    if (!contact) {
+      throw new HttpError(404);
     }
-
     res.status(200).json(deletedContact);
   } catch (error) {
     next(error);
@@ -81,11 +80,14 @@ export async function updateContact(req, res, next) {
   try {
     const { id } = req.params;
 
-    if (result.owner.toString() !== req.user.id) {
-      throw HttpError(404);
-    }
-
-    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+    const result = await Contact.findByIdAndUpdate(
+      {
+        _id: id,
+        owner: req.user.id,
+      },
+      req.body,
+      { new: true }
+    );
     if (!result) {
       throw HttpError(404);
     }
@@ -100,11 +102,14 @@ export async function updateStatusContact(req, res, next) {
   try {
     const { id } = req.params;
 
-    if (result.owner.toString() !== req.user.id) {
-      throw HttpError(404);
-    }
-
-    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+    const result = await Contact.findByIdAndUpdate(
+      {
+        _id: id,
+        owner: req.user.id,
+      },
+      req.body,
+      { new: true }
+    );
     if (!result) {
       throw HttpError(404);
     }
