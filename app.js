@@ -3,8 +3,10 @@ import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
 import { authMiddleware } from "./helpers/authmiddleware.js";
+import authRouter from "./routes/authRouter.js";
 import contactRouter from "./routes/contactRouter.js";
-import userRouter from "./routes/authRouter.js";
+import userRouter from "./routes/userRouter.js";
+// import multer from "multer";
 
 const DB_URI = process.env.DB_URI;
 
@@ -13,8 +15,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/contacts", authMiddleware, contactRouter);
+app.use("/api/users", authMiddleware, userRouter);
 
 app.use((err, req, res, next) => {
   const { status = 500, message = "Internal server error" } = err;
