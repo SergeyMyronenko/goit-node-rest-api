@@ -13,7 +13,7 @@ import {
   updateContactSchema,
 } from "../schemas/contactSchema.js";
 import validateBody from "../helpers/validateBody.js";
-import { authMiddleware } from "../helpers/authmiddleware.js";
+import { authMiddleware } from "../helpers/authMiddleware.js";
 
 const contactRouter = express.Router();
 

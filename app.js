@@ -2,11 +2,11 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
-import { authMiddleware } from "./helpers/authmiddleware.js";
+import { authMiddleware } from "./helpers/authMiddleware.js";
 import authRouter from "./routes/authRouter.js";
 import contactRouter from "./routes/contactRouter.js";
 import userRouter from "./routes/userRouter.js";
-// import multer from "multer";
+import path from "node:path";
 
 const DB_URI = process.env.DB_URI;
 
@@ -15,9 +15,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/avatars", express.static(path.resolve("./public/avatars")));
+
 app.use("/api/auth", authRouter);
 app.use("/api/contacts", authMiddleware, contactRouter);
-app.use("/api/users", authMiddleware, userRouter);
+app.use("/users", authMiddleware, userRouter);
 
 app.use((err, req, res, next) => {
   const { status = 500, message = "Internal server error" } = err;
