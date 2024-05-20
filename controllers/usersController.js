@@ -5,6 +5,10 @@ import jimp from "jimp";
 
 export async function userAvatar(req, res, next) {
   try {
+    if (!req.file) {
+      return res.status(400).send("Please select the avatar file");
+    }
+
     const userAvatar = await jimp.read(req.file.path);
     await userAvatar.cover(250, 250).writeAsync(req.file.path);
 
