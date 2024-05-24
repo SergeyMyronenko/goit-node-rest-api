@@ -19,7 +19,7 @@ app.use("/avatars", express.static(path.resolve("./public/avatars")));
 
 app.use("/api/auth", authRouter);
 app.use("/api/contacts", authMiddleware, contactRouter);
-app.use("/users", authMiddleware, userRouter);
+app.use("/users", userRouter);
 
 app.use((err, req, res, next) => {
   const { status = 500, message = "Internal server error" } = err;
