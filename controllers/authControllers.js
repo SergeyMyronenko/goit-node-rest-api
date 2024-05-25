@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 import mail from "../mail/mail.js";
+import "dotenv/config";
 
 export async function userRegistration(req, res, next) {
   const { email, password } = req.body;
@@ -27,13 +28,7 @@ export async function userRegistration(req, res, next) {
 
     const { subscription } = newUser;
 
-    await mail.sendMail({
-      to: email,
-      from: "mironych1987@gmail.com",
-      subject: "Learn node.js it easy",
-      html: `Thank you for registration, to confirm your email please go to this link <a href="http://localhost:3000/users/verify/${verificationToken}">Confirm registration</a>`,
-      text: `Thank you for registration, to confirm your email please go to this link http://localhost:3000/users/verify/${verificationToken}`,
-    });
+    await mail.sendMail(email);
 
     res.status(201).json({
       user: {

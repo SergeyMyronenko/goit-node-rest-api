@@ -73,13 +73,7 @@ export async function repeatVerify(req, res, next) {
         .send({ message: "Verification has already been passed" });
     }
 
-    await mail.sendMail({
-      to: email,
-      from: "mironych1987@gmail.com",
-      subject: "Learn node.js it easy",
-      html: `Thank you for registration, to confirm your email please go to this link <a href="http://localhost:3000/users/verify/${token}">Confirm registration</a>`,
-      text: `Thank you for registration, to confirm your email please go to this link http://localhost:3000/users/verify/${token}`,
-    });
+    await mail.sendMail(email);
 
     res.status(200).send({ message: "Verification email sent" });
   } catch (error) {
